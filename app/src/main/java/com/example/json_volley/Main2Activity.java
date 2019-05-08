@@ -9,7 +9,6 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -27,30 +26,28 @@ import java.io.BufferedReader;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
-    String id,name,username,email,street,suite,city,zipcode,address;
+public class Main2Activity extends AppCompatActivity {
+    String id, name, username, email, street, suite, city, zipcode, address,noHp;
 
     private RecyclerView recyclerView;
-    private Adapter_Json adapt;
+    private Adapter_Json2 adapt;
     private ArrayList<Char_> charlist;
     private Button btnGetdata;
-    private BufferedReader reader=null;
+    private BufferedReader reader = null;
     private HttpURLConnection connection = null;
     ProgressDialog progressDialog;
     SwipeRefreshLayout mswipeRefresh;
     RequestQueue requestQueue;
 
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        recyclerView=(RecyclerView)findViewById(R.id.recycler_view);
-        btnGetdata=(Button)findViewById(R.id.button_data);
-        mswipeRefresh=(SwipeRefreshLayout)findViewById(R.id.swipefresh);
-        requestQueue= Volley.newRequestQueue(this);
+        setContentView(R.layout.activity_main2);
+        recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+        btnGetdata = (Button) findViewById(R.id.buttonData);
+        mswipeRefresh = (SwipeRefreshLayout) findViewById(R.id.swipeFresh);
+        requestQueue = Volley.newRequestQueue(this);
 
 
         mswipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -72,26 +69,28 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void buatJsonArrayRq(){
-        progressDialog=new ProgressDialog(MainActivity.this);
+    public void buatJsonArrayRq() {
+        progressDialog = new ProgressDialog(Main2Activity.this);
         progressDialog.setMessage("Harap tunggu");
         progressDialog.setCancelable(false);
         progressDialog.show();
-        String requestUrl="https://jsonplaceholder.typicode.com/users";
+        String requestUrl = "http://210.210.154.65/api/kontak";
 
-        JsonArrayRequest jsonArrayRequest=new JsonArrayRequest(Request.Method.GET, requestUrl, null, new Response.Listener<JSONArray>() {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, requestUrl, null, new Response.Listener<JSONObject>() {
             @Override
-            public void onResponse(JSONArray response) {
+            public void onResponse(JSONObject response) {
                 charlist = new ArrayList<>();
                 try {
-                    for (int i = 0; i < response.length(); i++) {
-                        JSONObject pengguna = response.getJSONObject(i);
+                    JSONArray values = response.getJSONArray("values");
+                    for (int i = 0; i < values.length(); i++) {
+                        JSONObject pengguna = values.getJSONObject(i);
                         id = pengguna.getString("id");
-                        name = pengguna.getString("name");
-                        username = pengguna.getString("username");
+                        name = pengguna.getString("nama");
                         email = pengguna.getString("email");
+                        noHp=pengguna.getString("nohp");
+                        address=pengguna.getString("alamat");
 
-                        charlist.add(new Char_(id, name, username, email, address));
+                        charlist.add(new Char_(id, name,email,noHp,address));
                     }
 
                 } catch (JSONException x) {
@@ -101,8 +100,8 @@ public class MainActivity extends AppCompatActivity {
                 mswipeRefresh.setRefreshing(false);
                 progressDialog.dismiss();
 
-                adapt = new Adapter_Json(charlist);
-                RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(MainActivity.this);
+                adapt = new Adapter_Json2(charlist);
+                RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(Main2Activity.this);
                 recyclerView.setLayoutManager(layoutManager);
                 recyclerView.setAdapter(adapt);
 
@@ -118,14 +117,8 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        requestQueue.add(jsonArrayRequest);
-
+        requestQueue.add(jsonObjectRequest);
     }
 
 
-
-
-    }
-
-
-
+}

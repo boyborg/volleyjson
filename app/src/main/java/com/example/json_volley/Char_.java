@@ -3,15 +3,15 @@ package com.example.json_volley;
 public class Char_ {
     private String id;
     private String name;
-    private String username;
+    private String nohp;
     private String email;
     private String address;
 
 
-    public Char_ (String id,String name,String username,String email,String address){
+    public Char_ (String id,String name,String email,String nohp,String address){
         this.id = id;
         this.name = name;
-        this.username = username;
+        this.nohp = nohp;
         this.email = email;
         this.address = address;
     }
@@ -41,11 +41,11 @@ public class Char_ {
     }
 
     public String getUsername(){
-        return username;
+        return nohp;
     }
 
-    public void setUsername(String username){
-        this.username = username;
+    public void setUsername(String nohp){
+        this.nohp = nohp;
     }
 
     public String getAddress(){
